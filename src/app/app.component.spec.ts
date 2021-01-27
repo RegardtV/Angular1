@@ -19,7 +19,7 @@ describe('AppComponent', () => {
   it(`should have as title 'pick-or-post'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('pick-or-post');
+    expect(app.pageTitle).toEqual('pick-or-post');
   });
 
   it('should render title', () => {
