@@ -109,7 +109,7 @@ export class UserData implements InMemoryDbService {
       const matchedUser: User[] = this.users.filter(user => {return user.username === userLoginDetails[Object.keys(userLoginDetails)[0]] &&
                                                                     user.password === userLoginDetails[Object.keys(userLoginDetails)[1]] })
       if (matchedUser.length) {      
-        localStorage.setItem('currentUSer', JSON.stringify(matchedUser[0])); 
+        localStorage.setItem('currentUser', JSON.stringify(matchedUser[0])); 
         AuthenticationService.currentUser.next(JSON.stringify(matchedUser[0]));
         return {              
           status: 200,
