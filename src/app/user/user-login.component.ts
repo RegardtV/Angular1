@@ -27,11 +27,10 @@ export class UserLoginComponent implements OnInit, AfterViewInit {
   loginForm: FormGroup;
 
   // validation properties
-  minUsernameLength: number;
-  maxUsernameLength: number;
-  maxPasswordLength: number;
+  private minUsernameLength: number;
+  private maxUsernameLength: number;
+  private maxPasswordLength: number;
   
-  // private properties
   private validationMessages: { [key: string]: { [key: string]: string } };
   private msgProcessor: MessageProcessor;
   
@@ -66,9 +65,14 @@ export class UserLoginComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {  
     this.loginForm = this.formBuilder.group (
       {
-        username: ['', [Validators.required, Validators.minLength(this.minUsernameLength), Validators.maxLength(this.maxUsernameLength), WhitespaceValidator.removeSpaces]],
-        password: ['', [Validators.required, Validators.maxLength(this.maxPasswordLength),
-                        Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/), WhitespaceValidator.removeSpaces]]
+        username: ['', [Validators.required, 
+                        Validators.minLength(this.minUsernameLength), 
+                        Validators.maxLength(this.maxUsernameLength), 
+                        WhitespaceValidator.removeSpaces]],
+        password: ['', [Validators.required, 
+                        Validators.maxLength(this.maxPasswordLength),
+                        Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/), 
+                        WhitespaceValidator.removeSpaces]]
       }
     );
   }
@@ -81,9 +85,7 @@ export class UserLoginComponent implements OnInit, AfterViewInit {
     // Merge the blur event observable with the valueChanges observable
     // so we only need to subscribe once.
     merge(this.loginForm.valueChanges, ...controlBlurs)
-      .pipe(
-        debounceTime(800)
-        )
+      .pipe(debounceTime(800))
         .subscribe(() => {
           this.displayMessage = this.msgProcessor.processMessages(this.loginForm, null);
         });
@@ -94,8 +96,7 @@ export class UserLoginComponent implements OnInit, AfterViewInit {
     if (this.passwordInputType === 'text') {
       this.passwordInputType = 'password';
       this.passwordToggleMessage = 'show password'
-    }
-    else {
+    } else {
       this.passwordInputType = 'text';
       this.passwordToggleMessage = 'hide password'
     }
@@ -109,7 +110,7 @@ export class UserLoginComponent implements OnInit, AfterViewInit {
     }
     this.authService.authenticateUser(userLoginDetails)
       .subscribe({
-        next: () => {this.onLoginComplete()},
+        next: () => this.onLoginComplete(),
         error: () => this.authenticationAlert = 'Invalid login credentials.'
       })
   }
@@ -118,6 +119,7 @@ export class UserLoginComponent implements OnInit, AfterViewInit {
     this.authenticationAlert = '';
     this.loginForm.reset();
     this.passwordInputType = 'password';
-    this.passwordToggleMessage = 'show password'
+    this.passwordToggleMessage = 'show password';
+    this.router.navigate(['/advert-list', 'my-adverts']);
   }
 }

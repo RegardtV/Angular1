@@ -13,6 +13,7 @@ import { User } from '../models/user'
 export class UserService {
 
   private userUrl = 'api/users';
+  
   constructor(private http: HttpClient) { }
 
   // method to return all users in in-memory db
@@ -39,7 +40,7 @@ export class UserService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<User>('api/checkduplicate', user, { headers })
       .pipe(
-        tap(data => console.log('checkDuplicateUser: ' + user.username)),
+        tap((data) => console.log('checkDuplicateUser: ' + user.username)),
         catchError(this.handleError)
       );
   }
@@ -71,7 +72,7 @@ export class UserService {
     const url = `${this.userUrl}/${user.id}`;
     return this.http.put<User>(url, user, { headers })
       .pipe(
-        tap(() => console.log('updateProduct: ' + user.id)),
+        tap(() => console.log('updateUser: ' + user.id)),
         // return user on update as angular-in-memory-web-api does not
         map(() => user),
         catchError(this.handleError)
@@ -80,7 +81,7 @@ export class UserService {
 
 
   // private method to handle errors
-  private handleError(err): Observable<never> {
+  private handleError(err: any): Observable<never> {
     let errorMessage: string;
     if (err.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.

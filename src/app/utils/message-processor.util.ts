@@ -22,8 +22,7 @@ export class MessageProcessor {
                 const childMessages: { [key: string]: string } = this.processMessages(control.get(controlKey), controlKey)
                 Object.assign(messages, childMessages);
             })
-        }
-        else {
+        } else {
             if (this.validationMessages[controlKey]) {
                 messages[controlKey] = '';
                 if ((control.dirty || control.touched) && control.errors) {

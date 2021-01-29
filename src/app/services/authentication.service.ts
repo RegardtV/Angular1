@@ -6,7 +6,6 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { User } from '../models/user';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +22,7 @@ export class AuthenticationService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<User>('api/authenticate', userLoginDetails, { headers })
     .pipe(
-      tap(data => console.log('authenticateUser: ' + JSON.stringify(userLoginDetails))),
+      tap(() => console.log('authenticateUser: ' + JSON.stringify(userLoginDetails))),
       catchError(this.handleError)
     );
   }
@@ -31,7 +30,7 @@ export class AuthenticationService {
   // method to remove user from local storage
   removeCurrentUser(): void {
     localStorage.removeItem('currentUser');
-    // update observable
+    // update static observable
     AuthenticationService.currentUser.next('');
   }
 
@@ -41,7 +40,7 @@ export class AuthenticationService {
   }
  
   // private method to handle errors
-  private handleError(err): Observable<never> {
+  private handleError(err: any): Observable<never> {
     let errorMessage: string;
     if (err.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.

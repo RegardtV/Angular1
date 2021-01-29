@@ -1,5 +1,6 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
+import { User } from './models/user';
 import { AuthenticationService } from './services/authentication.service';
 
 @Component({
@@ -10,25 +11,24 @@ import { AuthenticationService } from './services/authentication.service';
 export class AppComponent implements OnInit{
   
   pageTitle: string;
-  currentUsername: string;
+  currentUser: User;
 
   constructor(private authService: AuthenticationService) { 
     this.pageTitle = 'Pick-or-Post'
-    this.currentUsername = '';
+    this.currentUser = null;
   }
   
   ngOnInit(): void {
     this.authService.getCurrentUser()
-    .subscribe(user => {
+    .subscribe((user: string) => {
       if (user) {
-        this.currentUsername = JSON.parse(user).username;
-      }
-      else {
-        this.currentUsername ='';
+        this.currentUser = JSON.parse(user);
+      }else {
+        this.currentUser = null;
       }
     });  
   }
-  
+  // called on sign out button click
   signOut(): void {
     this.authService.removeCurrentUser();
   }

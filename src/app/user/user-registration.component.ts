@@ -21,6 +21,7 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit {
  
   // view properties
   pageTitle: string;
+  errorMessage: string;
   duplicateUserAlert: string;
   displayMessage: { [key: string]: string };
   passwordToggleMessage: string;
@@ -28,16 +29,15 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit {
   registrationForm: FormGroup;
   
   // validation properties
-  minUsernameLength: number;
-  maxUsernameLength: number ;
-  minFirstNameLength: number;
-  maxFirstNameLength: number;
-  minLastNameLength: number;
-  maxLastNameLength: number;
-  maxEmailLength: number;
-  maxPasswordLength: number;
+  private minUsernameLength: number;
+  private maxUsernameLength: number ;
+  private minFirstNameLength: number;
+  private maxFirstNameLength: number;
+  private minLastNameLength: number;
+  private maxLastNameLength: number;
+  private maxEmailLength: number;
+  private maxPasswordLength: number;
 
-  // private properties
   private validationMessages: { [key: string]: { [key: string]: string } };
   private msgProcessor: MessageProcessor;
 
@@ -46,6 +46,7 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit {
               private router: Router) {
 
     this.pageTitle = 'Please register your details';
+    this.errorMessage = '';
     this.duplicateUserAlert = '';
     this.displayMessage = {};
     this.passwordToggleMessage = 'show password';
@@ -105,20 +106,36 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit {
 
     this.registrationForm = this.formBuilder.group(
       {
-        username: ['', [Validators.required, Validators.minLength(this.minUsernameLength),Validators.maxLength(this.maxUsernameLength), WhitespaceValidator.removeSpaces]],
-        firstName: ['', [Validators.required, Validators.minLength(this.minFirstNameLength),Validators.maxLength(this.maxFirstNameLength), WhitespaceValidator.removeSpaces]],
-        lastName: ['', [Validators.required, Validators.minLength(this.minLastNameLength), Validators.maxLength(this.maxLastNameLength), WhitespaceValidator.removeSpaces]],
+        username: ['', [Validators.required, 
+                        Validators.minLength(this.minUsernameLength),
+                        Validators.maxLength(this.maxUsernameLength), 
+                        WhitespaceValidator.removeSpaces]],
+        firstName: ['', [ Validators.required, 
+                          Validators.minLength(this.minFirstNameLength),
+                          Validators.maxLength(this.maxFirstNameLength), 
+                          WhitespaceValidator.removeSpaces]],
+        lastName: ['', [Validators.required, 
+                        Validators.minLength(this.minLastNameLength), 
+                        Validators.maxLength(this.maxLastNameLength), 
+                        WhitespaceValidator.removeSpaces]],
         emailGroup: this.formBuilder.group(
           {
-            email: ['', [Validators.required, Validators.email, Validators.maxLength(this.maxEmailLength), WhitespaceValidator.removeSpaces]],
-            emailConfirm: ['', [Validators.required, WhitespaceValidator.removeSpaces]]
+            email: ['', [ Validators.required, 
+                          Validators.email, 
+                          Validators.maxLength(this.maxEmailLength), 
+                          WhitespaceValidator.removeSpaces]],
+            emailConfirm: ['', [Validators.required, 
+                                WhitespaceValidator.removeSpaces]]
           }
         ),
         passwordGroup: this.formBuilder.group(
           {
-            password: ['', [Validators.required, Validators.maxLength(this.maxPasswordLength),
-                            Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/), WhitespaceValidator.removeSpaces]],
-            passwordConfirm: ['', [Validators.required, WhitespaceValidator.removeSpaces]]
+            password: ['', [Validators.required, 
+                            Validators.maxLength(this.maxPasswordLength),
+                            Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/), 
+                            WhitespaceValidator.removeSpaces]],
+            passwordConfirm: ['', [ Validators.required, 
+                                    WhitespaceValidator.removeSpaces]]
           }
         )
       }
@@ -141,11 +158,10 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit {
     // so we only need to subscribe once.
     merge(this.registrationForm.valueChanges, ...controlBlurs)
       .pipe(
-        debounceTime(800)
-        )
-        .subscribe(() => {
-          this.displayMessage = this.msgProcessor.processMessages(this.registrationForm, null);
-        });
+        debounceTime(800))
+          .subscribe(() => {
+            this.displayMessage = this.msgProcessor.processMessages(this.registrationForm, null);
+          });
   }
 
   // method called on click of password button to toggle whether password can be viewed
@@ -153,8 +169,7 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit {
     if (this.passwordInputType === 'text') {
       this.passwordInputType = 'password';
       this.passwordToggleMessage = 'show password'
-    }
-    else {
+    } else {
       this.passwordInputType = 'text';
       this.passwordToggleMessage = 'hide password'
     }
@@ -170,7 +185,7 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit {
           this.userService.createUser(newUser)
             .subscribe({
               next: () => this.onSaveComplete(),
-              error: err => console.log(err)
+              error: (err: any) => this.errorMessage = err
             })
         },
         error: () => this.duplicateUserAlert = 'This username is already taken. Please use a different one.'
@@ -185,7 +200,7 @@ export class UserRegistrationComponent implements OnInit, AfterViewInit {
       firstName: this.registrationForm.get('firstName').value,
       lastName: this.registrationForm.get('lastName').value,
       email: this.registrationForm.get('emailGroup.email').value,
-      password: this.registrationForm.get('passwordGroup.password').value
+      password: this.registrationForm.get('passwordGroup.password').value,
     };
   }
 
