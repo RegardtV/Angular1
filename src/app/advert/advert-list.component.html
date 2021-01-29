@@ -25,14 +25,22 @@
               <app-advert-detail [advert]="advert"></app-advert-detail>
             </td>
             <td>
-              <button class="btn btn-outline-primary btn-block"
-                      [routerLink]="['/advert', advert.id, 'edit']">
-                Edit
-              </button>
-              <button class="btn btn-outline-danger btn-block"
-                      (click)="onDelete(advert.id)">
-                Delete
-              </button>
+              <div *ngIf="!isUserList">
+                <button class="btn btn-outline-dark btn-block"
+                        [routerLink]="['/checkout', advert.id]">
+                  Buy
+                </button>
+              </div>
+              <div *ngIf="isUserList">
+                <button class="btn btn-outline-primary btn-block"
+                        [routerLink]="['/advert', advert.id, 'edit']">
+                  Edit
+                </button>
+                <button class="btn btn-outline-danger btn-block"
+                        (click)="onDelete(advert.id)">
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>

@@ -23,12 +23,12 @@ export class AdvertListComponent implements OnInit, OnDestroy {
   adverts: Advert[];
   filteredAdverts: Advert[];
   filterControl: FormControl;
+  isUserList: boolean; 
   
   private currentUser: User;
   private sub: Subscription;
   
   constructor(private adService: AdvertService,
-              private authService: AuthenticationService,
               private route: ActivatedRoute) {
 
     this.pageTitle = '';
@@ -52,10 +52,17 @@ export class AdvertListComponent implements OnInit, OnDestroy {
     this.sub = this.route.paramMap.subscribe(
       params => {
         const id = params.get('id');
+        if (id === 'all-adverts') {
+          this.getAllAdverts();
+          this.pageTitle = 'Listed adverts';
+          this.isUserList = false;
+        }
+        
         if (id === 'my-adverts') {
           if (this.currentUser) {
             this.getCurrentUserAdverts();
             this.pageTitle = `${this.currentUser.username}'s adverts`;
+            this.isUserList = true;
           }
         }
       }
@@ -85,7 +92,16 @@ export class AdvertListComponent implements OnInit, OnDestroy {
       advert.description.toLocaleLowerCase().indexOf(filterBy) !== -1
     );
   }
-
+  // private method to get all adverts 
+  private getAllAdverts(): void {
+    this.adService.getAdverts().subscribe({
+      next: (adverts: Advert[]) => {
+        this.adverts = adverts;
+        this.filteredAdverts = this.adverts;
+      },
+      error: err => this.errorMessage = err
+    });
+  }
   // private method to get currentUser adverts and assign to adverts and filtered adverts lists
   private getCurrentUserAdverts(): void {
     this.adService.getAdverts().subscribe({

@@ -120,6 +120,6 @@ export class UserLoginComponent implements OnInit, AfterViewInit {
     this.loginForm.reset();
     this.passwordInputType = 'password';
     this.passwordToggleMessage = 'show password';
-    this.router.navigate(['/advert-list', 'my-adverts']);
+    this.router.navigate(['/advert-list', 'all-adverts']);
   }
 }

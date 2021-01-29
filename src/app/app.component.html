@@ -22,6 +22,13 @@
         Sign in
       </a>
     </li>
+    <li class='nav-item'>
+      <a  class='nav-link pick-or-post {color: darkgoldenrod}' 
+          routerLinkActive='active'
+          [routerLink]="['/advert-list', 'all-adverts']">
+        Pick
+      </a>
+    </li>
   </ul>
   <ul class='navbar-nav ml-auto'>
     <li class='nav-item'>
@@ -34,7 +41,7 @@
       <button type="button" 
               class="btn btn-primary navbar-btn"
               (click)="signOut()"
-              [routerLink]="['/user-login']"
+              [routerLink]="['/welcome']"
               *ngIf="currentUser">
         Sign out
       </button>
@@ -48,7 +55,7 @@
       </a>
     </li>
     <li class='nav-item'>
-      <a  class='nav-link' 
+      <a  class='nav-link pick-or-post' 
           routerLinkActive='active' 
           [routerLink]="['/advert/0/edit']"
           *ngIf="currentUser">
